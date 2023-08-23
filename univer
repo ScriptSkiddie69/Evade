@@ -1,0 +1,286 @@
+local debounce = true
+local uis = game:GetService("UserInputService")
+local Char = game.Players.LocalPlayer.Character
+local Human = Char and Char:FindFirstChildWhichIsA("Humanoid")
+local connection;
+local isnotjumping = true
+print('2123')
+
+
+--[[function isDowned(player)
+local bool;
+if player.Character.StatChanges.Speed:FindFirstChild('Downed') then
+bool = true
+else
+bool = false
+end
+return bool
+end
+function pickup(player) -- drops or pickup
+local args = {
+    [1] = player.Name
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Revive"):WaitForChild("CarryPlayer"):FireServer(unpack(args))
+end
+function iscarried(player)
+local bool;
+if player.Character:FindFirstChild('CarriedBy') then
+bool = true
+else
+bool = false
+end
+return bool
+end]]
+local repo = 'https://raw.githubusercontent.com/wally-rblx/LinoriaLib/main/'
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+
+local Window = Library:CreateWindow({
+    -- Set Center to true if you want the menu to appear in the center
+    -- Set AutoShow to true if you want the menu to appear when it is created
+    -- Position and Size are also valid options here
+    -- but you do not need to define them unless you are changing them :)
+
+    Title = 'Pecter.lua Universal',
+    Center = true, 
+    AutoShow = true,
+})
+getgenv().revive = false
+-- You do not have to set your tabs & groups up this way, just a prefrence.
+local Tabs = {
+    -- Creates a new tab titled Main
+    Main = Window:AddTab('Main'), 
+    ['UI Settings'] = Window:AddTab('UI Settings'),
+}
+connection = uis.JumpRequest:Connect(function()
+    if debounce and Human:GetState() ~= Enum.HumanoidStateType.Freefall then
+        debounce = false
+        print('wassup')
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.X,Human.JumpPower, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Z)--game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+        wait()
+        debounce = true
+   end
+end)
+local bop = Tabs.Main:AddLeftGroupbox('Bhop')
+local slidet1 = 16
+bop:AddToggle('Bhop', {
+    Text = 'AutoJump/EasyBhop',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'make your life easier', -- Information shown when you hover over the toggle
+})
+Toggles.Bhop:OnChanged(function()
+    if Toggles.Bhop.Value == true then
+    if game.PlaceId == 9872472334 then
+        print('Your in evade!')
+connection = uis.JumpRequest:Connect(function()
+    if debounce and Human:GetState() ~= Enum.HumanoidStateType.Freefall then
+        isnotjumping = false
+        debounce = false
+        print('wassup')
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.X,slidet1, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Z)--game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+        wait()
+        isnotjumping = true
+        debounce = true
+
+   end
+end)
+else
+        print('Your not in evade')
+        connection = uis.JumpRequest:Connect(function()
+                if debounce and Human:GetState() ~= Enum.HumanoidStateType.Freefall then
+                    isnotjumping = false
+                    debounce = false
+                    print('wassup')
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.X,slidet1, game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity.Z)--game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+                    wait()
+                    isnotjumping = true
+                    debounce = true
+               end
+            end)
+        end
+        else
+            print('connection with your mom has been disconnected')
+            connection:Disconnect()
+end
+end)
+bop:AddSlider('TtT', {
+    Text = 'EasyBhop JumpPower',
+
+    -- Text, Default, Min, Max, Rounding must be specified.
+    -- Rounding is the number of decimal places for precision.
+
+    -- Example:
+    -- Rounding 0 - 5
+    -- Rounding 1 - 5.1
+    -- Rounding 2 - 5.15
+    -- Rounding 3 - 5.155
+
+    Default = 30,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+
+    Compact = false, -- If set to true, then it will hide the label
+})
+Options.TtT:OnChanged(function()
+slidet1 = Options.TtT.Value
+end)
+local Edge = Tabs.Main:AddLeftGroupbox('Edge Jump')
+Edge:AddToggle('Edge', {
+    Text = 'EdgeJump',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Auto jump at the edge of a part', -- Information shown when you hover over the toggle
+})
+local slidet = 30
+local Char = game.Players.LocalPlayer.Character
+local Human = Char and Char:FindFirstChildWhichIsA("Humanoid")
+local state
+local laststate
+local lastcf
+local condection
+local function edgejump() -- credits infinite yield and full credit to NoelGamer06 at V3rmillion
+    if Char and Human then
+        laststate = state
+        state = Human:GetState()
+        if isnotjumping and laststate ~= state and state == Enum.HumanoidStateType.Freefall and laststate ~= Enum.HumanoidStateType.Jumping then
+            isnotjumping = false
+            Char.HumanoidRootPart.CFrame = lastcf
+            Char.HumanoidRootPart.Velocity = Vector3.new(Char.HumanoidRootPart.Velocity.X, slidet , Char.HumanoidRootPart.Velocity.Z)
+            isnotjumping = true
+        end
+        lastcf = Char.HumanoidRootPart.CFrame
+    end
+end
+edgejump()
+condection = game:GetService('RunService').RenderStepped:Connect(edgejump) 
+Toggles.Edge:OnChanged(function()
+    if Toggles.Edge.Value == true then
+        condection = game:GetService('RunService').RenderStepped:Connect(edgejump) 
+    else
+        condection:Disconnect()
+    end
+end)
+Edge:AddSlider('Edgee', {
+    Text = 'EdgeJump JumpPower',
+
+    -- Text, Default, Min, Max, Rounding must be specified.
+    -- Rounding is the number of decimal places for precision.
+
+    -- Example:
+    -- Rounding 0 - 5
+    -- Rounding 1 - 5.1
+    -- Rounding 2 - 5.15
+    -- Rounding 3 - 5.155
+
+    Default = 30,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+
+    Compact = false, -- If set to true, then it will hide the label
+})
+Options.Edgee:OnChanged(function()
+slidet = Options.Edgee.Value
+end)
+local Local = Tabs.Main:AddRightGroupbox('Local')
+Local:AddSlider('Walkspeed', {
+    Text = 'WalkSpeed',
+
+    -- Text, Default, Min, Max, Rounding must be specified.
+    -- Rounding is the number of decimal places for precision.
+
+    -- Example:
+    -- Rounding 0 - 5
+    -- Rounding 1 - 5.1
+    -- Rounding 2 - 5.15
+    -- Rounding 3 - 5.155
+
+    Default = 50,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+
+    Compact = false, -- If set to true, then it will hide the label
+})
+Local:AddSlider('Jumppower', {
+    Text = 'JumpPower',
+
+    -- Text, Default, Min, Max, Rounding must be specified.
+    -- Rounding is the number of decimal places for precision.
+
+    -- Example:
+    -- Rounding 0 - 5
+    -- Rounding 1 - 5.1
+    -- Rounding 2 - 5.15
+    -- Rounding 3 - 5.155
+
+    Default = 19,
+    Min = 1,
+    Max = 100,
+    Rounding = 1,
+
+    Compact = false, -- If set to true, then it will hide the label
+})
+Options.Walkspeed:OnChanged(function()
+game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Options.Walkspeed.Value
+end)
+Options.Jumppower:OnChanged(function()
+game.Players.LocalPlayer.Character.Humanoid.JumpPower = Options.Jumppower.Value
+end)
+-- Library functions
+-- Sets the watermark visibility
+Library:SetWatermarkVisibility(true)
+
+-- Sets the watermark text
+Library:SetWatermark('Pecter.lua universal')
+
+Library.KeybindFrame.Visible = true; -- todo: add a function for this
+
+Library:OnUnload(function()
+    print('Unloaded!')
+    Library.Unloaded = true
+end)
+-- UI Settings
+local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
+
+-- I set NoUI so it does not show up in the keybinds menu
+MenuGroup:AddButton('Unload', function() Library:Unload() end) 
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'Insert', NoUI = true, Text = 'Menu keybind' }) 
+
+Library.ToggleKeybind = Options.MenuKeybind -- Allows you to have a custom keybind for the menu
+
+-- Addons:
+-- SaveManager (Allows you to have a configuration system)
+-- ThemeManager (Allows you to have a menu theme system)
+
+-- Hand the library over to our managers
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+
+-- Ignore keys that are used by ThemeManager. 
+-- (we dont want configs to save themes, do we?)
+SaveManager:IgnoreThemeSettings() 
+
+-- Adds our MenuKeybind to the ignore list 
+-- (do you want each config to have a different menu key? probably not.)
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' }) 
+
+-- use case for doing it this way: 
+-- a script hub could have themes in a global folder
+-- and game configs in a separate folder per game
+ThemeManager:SetFolder('MyScriptHub')
+SaveManager:SetFolder('MyScriptHub/specific-game')
+
+-- Builds our config menu on the right side of our tab
+SaveManager:BuildConfigSection(Tabs['UI Settings']) 
+
+-- Builds our theme menu (with plenty of built in themes) on the left side
+-- NOTE: you can also call ThemeManager:ApplyToGroupbox to add it to a specific groupbox
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+
+-- You can use the SaveManager:LoadAutoloadConfig() to load a config 
+-- which has been marked to be one that auto loads!
+
+game:GetService("ReplicatedStorage"):WaitForChild("Events"):WaitForChild("Respawn"):FireServer()
